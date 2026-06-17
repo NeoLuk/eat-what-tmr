@@ -532,6 +532,7 @@ body {
   .date-nav {
     padding: 8px 12px;
     gap: 8px;
+    top: 42px;  /* mobile header 較矮，減少 sticky top 避免空隙 */
   }
 
   .nav-btn {
