@@ -18,9 +18,6 @@ const dom = {
   weekLabel: $('weekLabel'),
   prevBtn: $('prevBtn'),
   nextBtn: $('nextBtn'),
-  dateList: $('dateList'),
-  dateListToggle: $('dateListToggle'),
-  toggleArrow: $('dateListToggle').querySelector('.toggle-arrow'),
   viewFull: $('viewFullBtn'),
   viewSimplified: $('viewSimplifiedBtn'),
   networkBadge: $('networkBadge'),
@@ -126,11 +123,6 @@ async function goToDate(dateStr) {
     state.currentIndex = idx >= 0 ? idx : 0;
     updateNavButtons();
 
-    // Highlight active date in list
-    document.querySelectorAll('.date-list a').forEach(a => {
-      a.classList.toggle('active', a.dataset.date === dateStr);
-    });
-
     hideLoading();
   } catch (err) {
     hideLoading();
@@ -156,27 +148,6 @@ async function switchView(view) {
   }
 }
 
-/* ── Build date list sidebar ── */
-function buildDateList(dates) {
-  dom.dateList.innerHTML = '';
-  dates.forEach(d => {
-    const li = document.createElement('li');
-    const a = document.createElement('a');
-    a.href = '#';
-    a.dataset.date = d.date;
-    a.textContent = `${d.label}`;
-    a.addEventListener('click', e => {
-      e.preventDefault();
-      goToDate(d.date);
-      // Close the list on mobile
-      dom.dateList.classList.remove('open');
-      dom.toggleArrow.classList.remove('open');
-    });
-    li.appendChild(a);
-    dom.dateList.appendChild(li);
-  });
-}
-
 /* ── Init ── */
 async function init() {
   showLoading();
@@ -186,7 +157,6 @@ async function init() {
     updateNetworkInfo();
 
     const dates = await loadDates();
-    buildDateList(dates);
 
     // Go to latest date
     const latest = dates[0];
@@ -223,12 +193,6 @@ dom.nextBtn.addEventListener('click', () => {
   if (state.currentIndex > 0) {
     goToDate(state.dates[state.currentIndex - 1].date);
   }
-});
-
-// Date list toggle
-dom.dateListToggle.addEventListener('click', () => {
-  dom.dateList.classList.toggle('open');
-  dom.toggleArrow.classList.toggle('open');
 });
 
 // View toggle
