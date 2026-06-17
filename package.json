@@ -1,0 +1,9 @@
+{
+  "name": "eat-what-tmr",
+  "version": "1.0.0",
+  "description": "孕期菜譜瀏覽器 — 24/7 LAN server",
+  "scripts": {
+    "install": "cd server && npm install",
+    "start": "cd server && node index.js"
+  }
+}
