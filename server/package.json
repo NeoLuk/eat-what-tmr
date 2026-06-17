@@ -1,0 +1,14 @@
+{
+  "name": "eat-what-tmr-viewer",
+  "version": "1.0.0",
+  "description": "Local intranet site to browse pregnancy meal plans",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js"
+  },
+  "dependencies": {
+    "express": "^4.21.0",
+    "marked": "^14.0.0"
+  }
+}

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eat What TMR · 孕期菜譜瀏覽</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <!-- ═══ Header ═══ -->
+  <header class="header">
+    <div class="header-inner">
+      <h1 class="logo">
+        <span class="logo-icon">🍽️</span>
+        <span class="logo-text">今天吃什麼</span>
+      </h1>
+      <span class="network-badge" id="networkBadge">內網可查看</span>
+    </div>
+  </header>
+
+  <!-- ═══ Date Navigation ═══ -->
+  <nav class="date-nav" id="dateNav">
+    <button class="nav-btn" id="prevBtn" aria-label="前一天">‹</button>
+
+    <div class="date-display">
+      <input type="date" id="datePicker" class="date-picker">
+      <span class="week-label" id="weekLabel"></span>
+    </div>
+
+    <button class="nav-btn" id="nextBtn" aria-label="後一天">›</button>
+  </nav>
+
+  <!-- ═══ Quick Date List (collapsible) ═══ -->
+  <div class="date-list-wrapper">
+    <button class="date-list-toggle" id="dateListToggle">
+      📆 所有日期
+      <span class="toggle-arrow">▾</span>
+    </button>
+    <ul class="date-list" id="dateList"></ul>
+  </div>
+
+  <!-- ═══ View Toggle ═══ -->
+  <div class="view-toggle">
+    <button class="view-btn active" data-view="full" id="viewFullBtn">📖 完整菜譜</button>
+    <button class="view-btn" data-view="simplified" id="viewSimplifiedBtn">📋 簡化版</button>
+  </div>
+
+  <!-- ═══ Section Jump ═══ -->
+  <nav class="section-nav" id="sectionNav" hidden>
+    <span class="section-nav-label">🔗 跳至：</span>
+    <button class="section-btn" data-section="lunch">🍽️ 午餐</button>
+    <button class="section-btn" data-section="dinner">🌙 晚餐</button>
+  </nav>
+
+  <!-- ═══ Loading State ═══ -->
+  <div class="loading" id="loading">
+    <div class="loading-spinner"></div>
+    <p>讀取中…</p>
+  </div>
+
+  <!-- ═══ Error State ═══ -->
+  <div class="error" id="error" hidden>
+    <p id="errorMessage"></p>
+    <button class="retry-btn" id="retryBtn">重試</button>
+  </div>
+
+  <!-- ═══ Main Content ═══ -->
+  <main class="content" id="content"></main>
+
+  <!-- ═══ Footer ═══ -->
+  <footer class="footer">
+    <p>🤰 孕晚期飲食記錄 — <span id="footerDate"></span></p>
+  </footer>
+
+  <script src="/app.js"></script>
+</body>
+</html>
