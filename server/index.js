@@ -1,6 +1,8 @@
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
+const crypto = require('crypto');
+const { exec } = require('child_process');
 const { marked } = require('marked');
 
 const app = express();
@@ -8,6 +10,10 @@ const PORT = process.env.PORT || 3000;
 
 // ── Config ──
 const OUTPUT_DIR = path.resolve(__dirname, '..', 'output');
+const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET || ''; // 可選：GitHub webhook secret
+
+// ── Middleware ──
+app.use(express.json());
 
 // ── Helpers ──
 
@@ -137,6 +143,49 @@ app.get('/api/network-info', (req, res) => {
     if (ip !== '127.0.0.1') break;
   }
   res.json({ ip, port: PORT });
+});
+
+/** POST /api/webhook — GitHub push 事件 → 自動 git pull + 重啟 */
+app.post('/api/webhook', (req, res) => {
+  // 驗證 GitHub webhook signature（如有設定 secret）
+  if (WEBHOOK_SECRET) {
+    const sig = req.headers['x-hub-signature-256'] || '';
+    const hmac = crypto.createHmac('sha256', WEBHOOK_SECRET);
+    const digest = 'sha256=' + hmac.update(JSON.stringify(req.body)).digest('hex');
+    try {
+      if (!crypto.timingSafeEqual(Buffer.from(sig), Buffer.from(digest))) {
+        return res.status(401).json({ error: 'Invalid signature' });
+      }
+    } catch {
+      return res.status(401).json({ error: 'Invalid signature' });
+    }
+  }
+
+  // 只處理 push 事件
+  const event = req.headers['x-github-event'];
+  if (event !== 'push') {
+    return res.json({ status: 'ignored', message: `Event: ${event}` });
+  }
+
+  res.json({ status: 'ok', message: 'Webhook received, pulling...' });
+
+  const repoDir = path.resolve(__dirname, '..');
+  exec('git pull origin main', { cwd: repoDir }, (err, stdout, stderr) => {
+    if (err) {
+      console.error('[webhook] git pull failed:', stderr);
+      return;
+    }
+    const msg = stdout.trim();
+    console.log('[webhook]', msg);
+
+    if (!msg.includes('Already up to date')) {
+      console.log('[webhook] 檢測到更新，3秒後重啟 server...');
+      setTimeout(() => {
+        console.log('[webhook] 正在重啟...');
+        process.exit(0); // pm2 會自動重啟
+      }, 3000);
+    }
+  });
 });
 
 // ── Static files ──
