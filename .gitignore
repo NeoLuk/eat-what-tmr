@@ -1,4 +1,5 @@
 node_modules/
 pregnancy-meal-planner-workspace/
 memory/
+.claude/
 .DS_Store
