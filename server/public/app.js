@@ -158,9 +158,11 @@ async function init() {
 
     const dates = await loadDates();
 
-    // Go to latest date
-    const latest = dates[0];
-    await goToDate(latest.date);
+    // Go to today's plan if available, otherwise the latest
+    const todayStr = new Date().toISOString().split('T')[0];
+    const hasToday = dates.some(d => d.date === todayStr);
+    const targetDate = hasToday ? todayStr : dates[0].date;
+    await goToDate(targetDate);
 
     // Set date picker min/max and event
     const lastDate = dates[0].date;
