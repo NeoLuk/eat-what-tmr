@@ -2,7 +2,6 @@
 let state = {
   dates: [],          // [{ date, week, label }] sorted desc
   currentIndex: 0,    // index into dates
-  view: 'full',       // 'full' | 'simplified'
   isLoading: false,
 };
 
@@ -18,8 +17,6 @@ const dom = {
   weekLabel: $('weekLabel'),
   prevBtn: $('prevBtn'),
   nextBtn: $('nextBtn'),
-  viewFull: $('viewFullBtn'),
-  viewSimplified: $('viewSimplifiedBtn'),
   networkBadge: $('networkBadge'),
   headerDate: $('headerDate'),
   footerDate: $('footerDate'),
@@ -78,13 +75,9 @@ async function loadDates() {
   return dates;
 }
 
-/* ── Load meal plan for a date ── */
-async function loadMealPlan(date, view) {
-  const endpoint = view === 'simplified'
-    ? `/api/meal-plan/${date}/simplified`
-    : `/api/meal-plan/${date}`;
-
-  const resp = await fetch(endpoint);
+/* ── Load meal plan for a date (full version only) ── */
+async function loadMealPlan(date) {
+  const resp = await fetch(`/api/meal-plan/${date}`);
   if (!resp.ok) {
     if (resp.status === 404) throw new Error(`${formatDate(date)} 還沒有菜譜`);
     throw new Error('載入失敗，請稍後重試');
@@ -103,7 +96,7 @@ async function goToDate(dateStr) {
   hideError();
 
   try {
-    const data = await loadMealPlan(dateStr, state.view);
+    const data = await loadMealPlan(dateStr);
 
     dom.datePicker.value = dateStr;
 
@@ -143,18 +136,6 @@ async function goToDate(dateStr) {
 function updateNavButtons() {
   dom.prevBtn.disabled = state.currentIndex >= state.dates.length - 1;
   dom.nextBtn.disabled = state.currentIndex <= 0;
-}
-
-/* ── Switch view (full / simplified) ── */
-async function switchView(view) {
-  state.view = view;
-  dom.viewFull.classList.toggle('active', view === 'full');
-  dom.viewSimplified.classList.toggle('active', view === 'simplified');
-
-  const currentDate = dom.datePicker.value;
-  if (currentDate) {
-    await goToDate(currentDate);
-  }
 }
 
 /* ── Init ── */
@@ -205,10 +186,6 @@ dom.nextBtn.addEventListener('click', () => {
     goToDate(state.dates[state.currentIndex - 1].date);
   }
 });
-
-// View toggle
-dom.viewFull.addEventListener('click', () => switchView('full'));
-dom.viewSimplified.addEventListener('click', () => switchView('simplified'));
 
 // Retry button
 dom.retryBtn.addEventListener('click', () => {

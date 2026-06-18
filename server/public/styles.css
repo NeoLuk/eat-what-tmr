@@ -157,37 +157,6 @@ body {
   font-weight: 500;
 }
 
-/* ── View Toggle ── */
-.view-toggle {
-  max-width: var(--max-width);
-  margin: 8px auto 0;
-  padding: 0 16px;
-  display: flex;
-  gap: 4px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  overflow: hidden;
-}
-
-.view-btn {
-  flex: 1;
-  padding: 10px;
-  border: none;
-  background: transparent;
-  font-family: var(--font-sans);
-  font-size: 0.9rem;
-  color: var(--text-secondary);
-  cursor: pointer;
-  transition: all 0.15s;
-}
-
-.view-btn.active {
-  background: var(--primary-light);
-  color: var(--primary-dark);
-  font-weight: 600;
-}
-
 /* ── Section Jump Nav ── */
 .section-nav {
   max-width: var(--max-width);

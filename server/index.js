@@ -50,17 +50,6 @@ function renderMarkdown(raw) {
   return html;
 }
 
-/** Preprocess simplified text to add markdown formatting for nicer rendering */
-function preprocessSimplified(text) {
-  return text
-    // Convert ══════ title underline → h1 heading (keep the title, drop the ══ line)
-    .replace(/^(.+)\n═+$/m, '# $1')
-    // Convert ──── section headers ──── → h2 headings
-    .replace(/^─{3,}\s*(.+?)\s*─{3,}$/gm, '## $1')
-    // Convert 【dish name】 → bold
-    .replace(/【(.+?)】/g, '**$1**');
-}
-
 // ── API Routes ──
 
 /** GET /api/dates — list available dates */
@@ -100,26 +89,6 @@ app.get('/api/meal-plan/:date', (req, res) => {
     raw,
     modifiedAt: mtime.toISOString(),
   });
-});
-
-/** GET /api/meal-plan/:date/simplified — get simplified version (rendered as HTML) */
-app.get('/api/meal-plan/:date/simplified', (req, res) => {
-  const { date } = req.params;
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
-    return res.status(400).json({ error: 'Invalid date format.' });
-  }
-
-  const files = fs.readdirSync(OUTPUT_DIR).filter(f => f.startsWith(date) && f.endsWith('-简化版.txt'));
-  if (files.length === 0) {
-    return res.status(404).json({ error: `No simplified version for ${date}` });
-  }
-
-  const info = parseFilename(files[0]);
-  const filepath = path.join(OUTPUT_DIR, files[0]);
-  const raw = fs.readFileSync(filepath, 'utf-8');
-  const html = renderMarkdown(preprocessSimplified(raw));
-  const mtime = fs.statSync(filepath).mtime;
-  res.json({ date, week: info?.week ?? null, html, text: raw, modifiedAt: mtime.toISOString() });
 });
 
 /** GET /api/network-info — detect LAN IP for display */
