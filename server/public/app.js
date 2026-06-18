@@ -21,6 +21,7 @@ const dom = {
   viewFull: $('viewFullBtn'),
   viewSimplified: $('viewSimplifiedBtn'),
   networkBadge: $('networkBadge'),
+  headerDate: $('headerDate'),
   footerDate: $('footerDate'),
   sectionNav: $('sectionNav'),
   sectionBtns: document.querySelectorAll('.section-btn'),
@@ -109,7 +110,15 @@ async function goToDate(dateStr) {
     // Derive week from API response or fall back to our dates list
     const week = data.week ?? state.dates.find(d => d.date === dateStr)?.week;
     dom.weekLabel.textContent = week ? `孕${week}周` : '';
+    dom.headerDate.textContent = formatDate(dateStr);
     dom.footerDate.textContent = formatDate(dateStr);
+
+    // Show current Beijing time (UTC+8)
+    const now = new Date();
+    const beijing = new Date(now.getTime() + 8 * 60 * 60 * 1000);
+    const hh = String(beijing.getUTCHours()).padStart(2, '0');
+    const mm = String(beijing.getUTCMinutes()).padStart(2, '0');
+    dom.headerDate.textContent = `${formatDate(dateStr)} ${hh}:${mm}`;
 
     dom.content.innerHTML = renderFull(data.html);
 

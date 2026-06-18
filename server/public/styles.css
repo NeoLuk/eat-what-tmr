@@ -67,8 +67,14 @@ body {
   font-size: 1.4rem;
 }
 
+.header-date {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+/* ── Network Badge ── */
 .network-badge {
-  font-size: 0.75rem;
   color: var(--accent-green);
   background: #e8f5e9;
   padding: 4px 10px;

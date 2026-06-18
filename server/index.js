@@ -91,12 +91,14 @@ app.get('/api/meal-plan/:date', (req, res) => {
 
   const raw = fs.readFileSync(plan.filepath, 'utf-8');
   const html = renderMarkdown(raw);
+  const mtime = fs.statSync(plan.filepath).mtime;
 
   res.json({
     date: plan.date,
     week: plan.week,
     html,
     raw,
+    modifiedAt: mtime.toISOString(),
   });
 });
 
@@ -113,9 +115,11 @@ app.get('/api/meal-plan/:date/simplified', (req, res) => {
   }
 
   const info = parseFilename(files[0]);
-  const raw = fs.readFileSync(path.join(OUTPUT_DIR, files[0]), 'utf-8');
+  const filepath = path.join(OUTPUT_DIR, files[0]);
+  const raw = fs.readFileSync(filepath, 'utf-8');
   const html = renderMarkdown(preprocessSimplified(raw));
-  res.json({ date, week: info?.week ?? null, html, text: raw });
+  const mtime = fs.statSync(filepath).mtime;
+  res.json({ date, week: info?.week ?? null, html, text: raw, modifiedAt: mtime.toISOString() });
 });
 
 /** GET /api/network-info — detect LAN IP for display */
