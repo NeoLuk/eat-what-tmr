@@ -115,10 +115,11 @@ async function goToDate(dateStr) {
 
     dom.content.innerHTML = renderFull(data.html);
 
-    // Show section jump nav if content has anchored sections
+    // Show section jump nav if content has any anchored sections
     const hasLunch = document.getElementById('section-lunch');
     const hasDinner = document.getElementById('section-dinner');
-    dom.sectionNav.hidden = !(hasLunch || hasDinner);
+    const hasSummary = document.getElementById('section-summary');
+    dom.sectionNav.hidden = !(hasLunch || hasDinner || hasSummary);
 
     // Update nav button states
     const idx = state.dates.findIndex(d => d.date === dateStr);

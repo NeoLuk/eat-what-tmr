@@ -42,10 +42,11 @@ function renderMarkdown(raw) {
     gfm: true,
   });
 
-  // Add anchor IDs to 午餐/晚餐 section headings for jump navigation
+  // Add anchor IDs to section headings for jump navigation
   html = html
     .replace(/<h2>(.*?午餐.*?)<\/h2>/g, '<h2 id="section-lunch">$1</h2>')
-    .replace(/<h2>(.*?晚餐.*?)<\/h2>/g, '<h2 id="section-dinner">$1</h2>');
+    .replace(/<h2>(.*?晚餐.*?)<\/h2>/g, '<h2 id="section-dinner">$1</h2>')
+    .replace(/<h2>(.*?總結.*?)<\/h2>/g, '<h2 id="section-summary">$1</h2>');
 
   return html;
 }
