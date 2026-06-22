@@ -205,6 +205,25 @@ dom.sectionBtns.forEach(btn => {
   });
 });
 
+// Tab switching within meal sections (event delegation on content)
+dom.content.addEventListener('click', e => {
+  const btn = e.target.closest('.tab-btn');
+  if (!btn) return;
+
+  const tabs = btn.closest('.meal-tabs');
+  if (!tabs) return;
+
+  // Update nav buttons
+  tabs.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+
+  // Show corresponding panel
+  const idx = Array.from(tabs.querySelectorAll('.tab-btn')).indexOf(btn);
+  tabs.querySelectorAll('.tab-panel').forEach((p, i) => {
+    p.classList.toggle('active', i === idx);
+  });
+});
+
 // Keyboard shortcuts
 document.addEventListener('keydown', e => {
   if (e.key === 'ArrowLeft' && !dom.prevBtn.disabled) {

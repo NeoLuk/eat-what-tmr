@@ -75,11 +75,7 @@ body {
 
 /* ── Network Badge ── */
 .network-badge {
-  color: var(--accent-green);
-  background: #e8f5e9;
-  padding: 4px 10px;
-  border-radius: 20px;
-  white-space: nowrap;
+  display: none;
 }
 
 /* ── Date Navigation ── */
@@ -294,10 +290,85 @@ body {
   scroll-margin-top: 130px;  /* clear sticky header (~56px) + date-nav (~68px) + breathing room */
 }
 
-.content-inner h3 {
+/* 每道菜以卡片視覺分組 */
+.dish-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 18px;
+  margin: 10px 0;
+  box-shadow: var(--shadow);
+}
+
+.dish-card h3 {
   font-size: 1.05rem;
-  margin: 20px 0 10px;
-  color: var(--text);
+  margin: 0 0 12px;
+  color: var(--primary-dark);
+}
+
+.dish-card > *:last-child {
+  margin-bottom: 0;
+}
+
+/* ── Meal Tabs ── */
+.meal-tabs {
+  margin: 10px 0;
+}
+
+.tab-nav {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding-bottom: 4px;
+}
+
+.tab-nav::-webkit-scrollbar {
+  display: none;
+}
+
+.tab-btn {
+  flex-shrink: 0;
+  padding: 6px 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.tab-btn.active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+  font-weight: 600;
+}
+
+.tab-btn:not(.active):active {
+  background: var(--primary-light);
+  border-color: var(--primary);
+}
+
+.tab-panel {
+  display: none;
+}
+
+.tab-panel.active {
+  display: block;
+}
+
+.tab-panel .dish-card {
+  margin-top: 4px;
+}
+
+.dish-card > *:first-child {
+  margin-top: 0;
 }
 
 /* Paragraphs */

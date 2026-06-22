@@ -48,6 +48,40 @@ function renderMarkdown(raw) {
     .replace(/<h2>(.*?晚餐.*?)<\/h2>/g, '<h2 id="section-dinner">$1</h2>')
     .replace(/<h2>(.*?總結.*?)<\/h2>/g, '<h2 id="section-summary">$1</h2>');
 
+  // Wrap each dish (h3 → next h3 / h2 / hr) in a card for visual grouping
+  // 跳過營養總覽，不包卡片
+  html = html.replace(
+    /(<h3[^>]*>[\s\S]*?<\/h3>[\s\S]*?)(?=<h[23][^>]*>|<hr\b|$)/g,
+    (match) => {
+      if (match.includes('營養總覽')) return match;
+      return '<div class="dish-card">' + match + '</div>';
+    }
+  );
+
+  // Group consecutive dish cards into tab containers (per meal)
+  html = html.replace(
+    /((?:<div class="dish-card">[\s\S]*?<\/div>\s*)+)(?=<hr|<h[23]|$)/g,
+    (match) => {
+      const cards = match.match(/<div class="dish-card">[\s\S]*?<\/div>/g);
+      if (!cards || cards.length <= 1) return match;
+
+      const titles = cards.map(card => {
+        const m = card.match(/<h3[^>]*>([\s\S]*?)<\/h3>/);
+        return m ? m[1].trim() : '';
+      });
+
+      const nav = titles.map((t, i) =>
+        `<button class="tab-btn${i === 0 ? ' active' : ''}" data-tab="t${i}">${t}</button>`
+      ).join('');
+
+      const panels = cards.map((c, i) =>
+        `<div class="tab-panel${i === 0 ? ' active' : ''}" data-tab="t${i}">${c}</div>`
+      ).join('');
+
+      return `<div class="meal-tabs"><div class="tab-nav">${nav}</div><div class="tab-panels">${panels}</div></div>`;
+    }
+  );
+
   return html;
 }
 
