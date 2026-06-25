@@ -58,6 +58,12 @@ function renderMarkdown(raw) {
     }
   );
 
+  // Remove <hr> between consecutive dish cards so they can be grouped into tabs
+  html = html.replace(
+    /<\/div>\s*<hr\s*\/?>\s*<div class="dish-card">/g,
+    '</div><div class="dish-card">'
+  );
+
   // Group consecutive dish cards into tab containers (per meal)
   html = html.replace(
     /((?:<div class="dish-card">[\s\S]*?<\/div>\s*)+)(?=<hr|<h[23]|$)/g,
